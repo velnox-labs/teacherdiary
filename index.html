@@ -420,6 +420,9 @@
   .p0{background:#dbe9fb;color:#0f4a9e}.p1{background:#d7f3e6;color:#0b7a50}.p2{background:#e7defb;color:#4b2fb0}.p3{background:#fde9c8;color:#a35f00}.p4{background:#d3f3f6;color:#0b7482}
   .aibar{display:grid;grid-template-columns:1fr 1fr;gap:8px}.aibar button{height:42px!important;font-size:14px!important;margin:0!important;padding:0 6px}
   .gen{background:#f0f6ff;border:1.5px solid #cfe0f8;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px}
+  .hcal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}.hcal i{font:600 11px var(--font-hi);color:#4a6a9c;font-style:normal;padding:4px 0}
+  .hc{appearance:none;border:0;border-radius:10px;background:#f2f7fe;color:#0f3a80;font:600 14px var(--font-hi);padding:9px 0;cursor:pointer}.hc.sun{color:#c0392b}.hc.vac{background:#dcecff;color:#1a4f9a}.hc.hol{background:#ffe3a3;color:#7a4a00}.hc.sel{outline:2px solid #1a5fd0}
+  .hnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.hnav b{font:700 16px var(--font-hi);color:#0f3a80}.hnav button{appearance:none;border:0;background:#eaf3ff;color:#1a5fd0;border-radius:10px;padding:8px 14px;font:700 16px var(--font-hi);cursor:pointer}
   .cps{display:flex;flex-wrap:wrap;gap:6px}
   .cp{appearance:none;border:1.5px solid #cfe0f8;background:#fff;color:#1a5fd0;border-radius:999px;padding:6px 12px;font:600 13px var(--font-hi);cursor:pointer}
   .cp.on{background:#1a5fd0;color:#fff;border-color:#1a5fd0}
@@ -912,10 +915,12 @@
   var NH = { '01-26': 'गणतंत्र दिवस', '04-14': 'अंबेडकर जयंती', '08-15': 'स्वतंत्रता दिवस', '10-02': 'गांधी जयंती', '12-25': 'क्रिसमस' };
   var FB = null;
   function snapOf() { return JSON.stringify([S.rows, S.cmt || '']); }
-  function holOf(d) { var H = (DB.session && ud().holidays) || [], i; for (i = 0; i < H.length; i++) if (H[i].date === d) return H[i].name; return NH[d.slice(5)] || ''; }
+  var HL = {'2026-01-03': 'हज़रत अली का जन्म दिवस', '2026-01-14': 'मकर संक्रान्ति', '2026-01-23': 'बसन्त पंचमी', '2026-01-26': 'गणतन्त्र दिवस', '2026-02-01': 'संत रविदास जयन्ती', '2026-02-15': 'महाशिवरात्रि', '2026-03-02': 'होलिका दहन', '2026-03-04': 'होली', '2026-03-21': 'ईद-उल-फितर', '2026-03-26': 'रामनवमी', '2026-03-31': 'महावीर जयंती', '2026-04-03': 'गुड फ्राइडे', '2026-04-14': 'डॉ0 भीमराव अम्बेडकर जन्म दिवस', '2026-05-01': 'बुद्ध पूर्णिमा', '2026-05-27': 'ईदुज्जुहा (बकरीद)', '2026-06-26': 'मोहर्रम', '2026-08-04': 'चेहल्लुम', '2026-08-15': 'स्वतंत्रता दिवस', '2026-08-26': 'ईद-ए-मिलाद / वारावफात', '2026-08-28': 'रक्षाबंधन', '2026-09-04': 'जन्माष्टमी', '2026-09-17': 'विश्वकर्मा पूजा', '2026-09-25': 'अनन्त चतुर्दशी', '2026-10-02': 'महात्मा गांधी जन्मदिवस', '2026-10-20': 'दशहरा (महा नवमी) / विजय दशमी', '2026-10-26': 'महर्षि वाल्मीकि जयन्ती', '2026-10-31': 'सरदार वल्लभ भाई पटेल का जन्म दिवस एवं आचार्य नरेन्द्र देव जयन्ती', '2026-11-08': 'नरक चतुर्दशी / दीपावली', '2026-11-09': 'गोवर्धन पूजा', '2026-11-11': 'भैया दूज / चित्रगुप्त जयन्ती', '2026-11-15': 'छठ पूजा पर्व', '2026-11-24': 'गुरुनानक जयन्ती / कार्तिक पूर्णिमा / गुरु तेगबहादुर शहीद दिवस', '2026-12-25': 'क्रिसमस डे'};
+  function vacOf(d) { var m = d.slice(5); return (m >= '05-20' && m <= '06-15') ? 'ग्रीष्मावकाश' : (m >= '12-31' || m <= '01-14') ? 'शीतकालीन अवकाश' : ''; }
+  function holOf(d) { var H = (DB.session && ud().holidays) || [], i; for (i = 0; i < H.length; i++) if (H[i].date === d) return H[i].name; return HL[d] || vacOf(d) || NH[d.slice(5)] || ''; }
   function nts(d) { var L = ud().notes.filter(function (n) { return n.date === d; }); return L.length ? '<p class="tx1">इस दिन के नोट: ' + L.map(function (n) { return esc(n.title || n.body.slice(0, 30)); }).join(', ') + '</p>' : ''; }
   function setAv(x, u, ini) { if (u.photo) { x.style.backgroundImage = 'url(' + u.photo + ')'; x.classList.add('ph'); x.textContent = ''; } else { x.style.backgroundImage = ''; x.classList.remove('ph'); x.textContent = ini; } }
-  function pub(u) { return { name: u.name || '', email: u.email || '', mobile: u.mobile || '', school: u.school || '', district: u.district || '', state: u.state || '', role: u.role || '', photo: u.photo || '', created: u.created || '' }; }
+  function pub(u) { return { name: u.name || '', email: u.email || '', mobile: u.mobile || '', school: u.school || '', district: u.district || '', state: u.state || '', role: u.role || '', photo: u.photo || '', classes: u.classes || [], subjects: u.subjects || [], created: u.created || '' }; }
   function wait(b, p, t) { b.disabled = true; var o = b.innerHTML; b.innerHTML = '<span class="sp"></span>' + (t === undefined ? ' कृपया प्रतीक्षा करें...' : t); function done() { b.disabled = false; b.innerHTML = o; } return p.then(function (v) { done(); return v; }, function (x) { done(); throw x; }); }
   function fbErr(e, d) {
     var m = { 'auth/invalid-credential': 'ईमेल या पासवर्ड गलत है।', 'auth/wrong-password': 'ईमेल या पासवर्ड गलत है।', 'auth/user-not-found': 'ईमेल या पासवर्ड गलत है।', 'auth/invalid-email': 'सही ईमेल दर्ज करें।', 'auth/email-already-in-use': 'यह ईमेल पहले से पंजीकृत है।', 'auth/weak-password': 'पासवर्ड कम से कम 6 अक्षर का होना चाहिए।', 'auth/too-many-requests': 'बहुत ज़्यादा कोशिशें हुईं। थोड़ी देर बाद फिर कोशिश करें।', 'auth/network-request-failed': 'इंटरनेट नहीं है। कनेक्शन जाँचें।', 'auth/user-disabled': 'यह खाता बंद है।', 'auth/requires-recent-login': 'सुरक्षा के लिए दोबारा लॉग इन करें।', 'permission-denied': 'अनुमति नहीं मिली (Firestore नियम जाँचें)।', 'unavailable': 'इंटरनेट नहीं है।' };
@@ -1102,6 +1107,9 @@
   // ---------- diary ----------
   var CLS = ['कक्षा 1', 'कक्षा 2', 'कक्षा 3', 'कक्षा 4', 'कक्षा 5', 'कक्षा 6', 'कक्षा 7', 'कक्षा 8', 'मिश्रित'];
   var GENS = ['हिंदी', 'गणित', 'EVS', 'अंग्रेज़ी'];
+  var SUBJ = ['हिंदी', 'गणित', 'EVS', 'अंग्रेज़ी', 'विज्ञान', 'सामाजिक विज्ञान', 'संस्कृत', 'कला', 'सामान्य ज्ञान'];
+  function tGens() { var u = me(), s = (u && u.subjects) || [], g = GENS.filter(function (x) { return s.indexOf(x) > -1; }); return g.length ? g : GENS; }
+  function tCls() { var u = me(), s = (u && u.classes) || []; return CLS.filter(function (x) { return s.indexOf(x) > -1; }); }
   var BK = {
     'हिंदी': { L: ['हमारा विद्यालय', 'मेरा परिवार', 'फल और सब्ज़ियाँ', 'पशु-पक्षी', 'हमारे त्योहार', 'कहानी लेखन', 'वर्षा ऋतु'], P: ['चित्रों के माध्यम से चर्चा', 'सस्वर वाचन', 'मौखिक प्रश्नोत्तर', 'लेखन अभ्यास'], A: 'समूह में कहानी / कविता वाचन', T: 'चार्ट, चित्र कार्ड', H: 'पाठ का सुलेख लिखना', O: ['{L} को पढ़कर समझना', 'सरल वाक्य बोलना और लिखना'] },
     'गणित': { L: ['गिनती (1-100)', 'जोड़', 'घटाव', 'गुणा', 'भाग', 'आकृतियाँ', 'मापन'], P: ['कंकड़ / वस्तुओं से अभ्यास', 'उदाहरण के साथ समझाना', 'श्यामपट्ट पर हल करना', 'कॉपी में अभ्यास'], A: 'खेल-खेल में गणित', T: 'गिनती के कंकड़, संख्या कार्ड', H: '5 प्रश्न हल करना', O: ['{L} की प्रक्रिया समझना', '{L} पर आधारित प्रश्न हल करना'] },
@@ -1123,7 +1131,7 @@
     '<div class="bd0" id="dMain"><div class="cd"><div class="dth"><h2>शिक्षण की दैनिक कार्य-योजना</h2></div><div id="dRows"></div><div class="gen" id="dGen" hidden></div>' +
     '<div><label class="lbl" for="dCm">शिक्षक की टिप्पणी</label><textarea class="in" id="dCm" rows="2" placeholder="आज की कक्षा पर अपनी टिप्पणी लिखें..."></textarea></div><div class="aibar"><button class="btn-main" id="dAi" type="button">\u2728 स्वतः बनाएँ</button><button class="btn-alt" id="dAdd" type="button">+ पंक्ति जोड़ें</button></div><div class="stt" id="dSt"></div></div>' +
     '<div class="acts"><button type="button" id="aCp">कॉपी करें</button><button type="button" id="aSh">शेयर करें</button><button type="button" id="aPr">प्रिंट करें</button><button type="button" class="pri" id="aSv">सेव करें</button></div></div>' +
-    '<div class="cd" id="dEd" hidden></div></div><datalist id="subjList">' + ['हिंदी', 'गणित', 'EVS', 'अंग्रेज़ी', 'संस्कृत', 'कला', 'सामान्य ज्ञान'].map(function (x) { return '<option value="' + x + '">'; }).join('') + '</datalist>';
+    '<div class="cd" id="dEd" hidden></div></div><datalist id="subjList">' + SUBJ.map(function (x) { return '<option value="' + x + '">'; }).join('') + '</datalist>';
 
   $('dCm').oninput = function () { S.cmt = this.value; renderRows(); };
   function fillSel() {
@@ -1209,11 +1217,11 @@
   function defCls() {
     var D = ud().diaries, bd = '', cs = [];
     Object.keys(D).forEach(function (k) { var r = D[k]; if (r.date < S.date && r.date > bd) { bd = r.date; cs = []; rowsOf(r).forEach(function (x) { if (x.cls && cs.indexOf(x.cls) < 0) cs.push(x.cls); }); } });
-    return cs.length ? cs : CLS.slice(0, 5);
+    var pc = tCls(); return pc.length ? pc : cs.length ? cs : CLS.slice(0, 5);
   }
   function gen(c, i, so) {
     var d = pd(S.date), n = info(d).n || 1, cn = clsNo(c), band = cn <= 2 ? 0 : cn <= 5 ? 1 : 2, last = so ? null : hist(c);
-    var sub = so || (last && GENS.indexOf(last.sub) > -1 ? GENS[(GENS.indexOf(last.sub) + 1) % GENS.length] : GENS[(n - 1 + i) % GENS.length]);
+    var G = tGens(), sub = so || (last && G.indexOf(last.sub) > -1 ? G[(G.indexOf(last.sub) + 1) % G.length] : G[(n - 1 + i) % G.length]);
     var T = TOP[sub][band], seed = Math.floor(d / 864e5) + cn + (S.vr || 0), h = hist(c, sub), at = h ? T.indexOf(h.les) : -1;
     var L = T[(at > -1 ? at + 1 : h ? seed : 0) % T.length], pm = PM[sub], o = OUTS[sub][band];
     var pick = function (a, k) { return a[(seed + (k || 0)) % a.length]; };
@@ -1320,25 +1328,32 @@
   R.profile = function () {
     var u = me(), E = S.edit, ini = u.name.trim().split(/\s+/).map(function (w) { return w.charAt(0); }).join('').slice(0, 2).toUpperCase();
     function row(k, l, v, t) { return '<div class="pr"><span>' + l + '</span>' + (E && k ? '<input class="in" id="p_' + k + '" type="' + (t || 'text') + '" value="' + esc(v) + '"><div class="err" id="p_' + k + 'E"></div>' : '<b>' + (esc(v) || '—') + '</b>') + '</div>'; }
+    if (E && !S.pc) S.pc = { c: (u.classes || []).slice(), s: (u.subjects || []).slice() };
+    if (!E) S.pc = null;
+    function chips(id, list, sel) { return '<div class="cps" id="' + id + '">' + list.map(function (x) { return '<button type="button" class="cp' + (sel.indexOf(x) > -1 ? ' on' : '') + '">' + x + '</button>'; }).join('') + '</div>'; }
+    var teach = E ? '<div class="pr"><span>आप कौन-सी कक्षाएँ पढ़ाते हैं?</span>' + chips('p_cls', CLS.slice(0, 8), S.pc.c) + '</div><div class="pr"><span>आप कौन-से विषय पढ़ाते हैं?</span>' + chips('p_sub', SUBJ, S.pc.s) + '</div>' : row(null, 'पढ़ाई जाने वाली कक्षाएँ', (u.classes || []).join(', ')) + row(null, 'पढ़ाए जाने वाले विषय', (u.subjects || []).join(', '));
     $('pg-profile').innerHTML = H('शिक्षक डायरी', 'प्रोफाइल', 'home') + '<div class="bd"><div class="cd"><div class="pf"><div class="big" id="pBig">' + esc(ini) + '</div><div><h3>' + esc(u.name) + '</h3><span class="chip">' + esc(u.role) + '</span></div></div>' +
       '<input type="file" id="pFile" accept="image/*" hidden><div class="aibar"><button class="btn-alt" id="pPh" type="button">फोटो बदलें</button>' + (u.photo ? '<button class="btn-alt" id="pRm" type="button">फोटो हटाएँ</button>' : '') + '</div>' + (E ? '' : '<button class="btn-alt" id="pEd" type="button">संपादित करें</button>') + '</div>' +
       '<div class="cd"><h3>व्यक्तिगत जानकारी</h3>' + row('name', 'पूरा नाम', u.name) + row(null, 'ईमेल पता', u.email) + row('mobile', 'मोबाइल नंबर', u.mobile, 'tel') + '</div>' +
       '<div class="cd"><h3>विद्यालय की जानकारी</h3>' + row('school', 'विद्यालय का नाम', u.school) + row('district', 'जिला', u.district) + row('state', 'राज्य', u.state) + '</div>' +
+      '<div class="cd"><h3>शिक्षण की जानकारी</h3>' + teach + '</div>' +
       '<div class="cd"><h3>खाता जानकारी</h3>' + row(null, 'पंजीकरण की तिथि', u.created ? fd(pd(u.created)) : '') + row(null, 'ईमेल सत्यापन', 'हो चुका ✓') + '</div>' +
       (E ? '<div class="acts" style="grid-template-columns:1fr 1fr"><button type="button" id="pCn">रद्द करें</button><button type="button" class="pri" id="pSv">सेव करें</button></div>' : '') + '</div>';
     setAv($('pBig'), u, ini);
     $('pPh').onclick = function () { $('pFile').click(); };
     $('pFile').onchange = function () { readPhoto(this.files[0], function (d) { u.photo = d; sync(FB.setProfile({ photo: d }), 'फोटो'); R.profile(); say('फोटो बदल गई ✓'); }); };
     if ($('pRm')) $('pRm').onclick = function () { u.photo = ''; sync(FB.setProfile({ photo: '' }), 'फोटो'); R.profile(); say('फोटो हटा दी गई'); };
-    if (!E) $('pEd').onclick = function () { S.edit = true; R.profile(); };
+    if (!E) $('pEd').onclick = function () { S.edit = true; S.pc = null; R.profile(); };
     else {
-      $('pCn').onclick = function () { S.edit = false; R.profile(); };
+      $('pCn').onclick = function () { S.edit = false; S.pc = null; R.profile(); };
+      function tg(id, arr) { $(id).onclick = function (e) { var b = e.target.closest('.cp'); if (!b) return; var i = arr.indexOf(b.textContent); if (i > -1) arr.splice(i, 1); else arr.push(b.textContent); b.classList.toggle('on'); }; }
+      tg('p_cls', S.pc.c); tg('p_sub', S.pc.s);
       $('pSv').onclick = function () {
         var n = $('p_name').value.trim(), m = $('p_mobile').value.trim(), ok = true;
         err('p_name', n.length < 2 ? 'कृपया पूरा नाम दर्ज करें।' : ''); if (n.length < 2) ok = false;
         err('p_mobile', m && !/^[6-9]\d{9}$/.test(m) ? '10 अंकों का सही मोबाइल नंबर दर्ज करें।' : ''); if (m && !/^[6-9]\d{9}$/.test(m)) ok = false;
         if (!ok) return;
-        busy(this, function () { u.name = n; u.mobile = m; u.school = $('p_school').value.trim(); u.district = $('p_district').value.trim(); u.state = $('p_state').value.trim(); sync(FB.setProfile(pub(u)), 'प्रोफाइल'); S.edit = false; R.profile(); say('प्रोफाइल सेव हो गई ✓'); });
+        busy(this, function () { u.name = n; u.mobile = m; u.school = $('p_school').value.trim(); u.district = $('p_district').value.trim(); u.state = $('p_state').value.trim(); u.classes = CLS.filter(function (x) { return S.pc.c.indexOf(x) > -1; }); u.subjects = SUBJ.filter(function (x) { return S.pc.s.indexOf(x) > -1; }); S.pc = null; sync(FB.setProfile(pub(u)), 'प्रोफाइल'); S.edit = false; R.profile(); say('प्रोफाइल सेव हो गई ✓'); });
       };
     }
   };
@@ -1364,11 +1379,29 @@
   R.help = function () {
     $('pg-help').innerHTML = H('सहायता', 'उपयोग कैसे करें', 'home') + '<div class="bd"><div class="cd"><h3>डायरी लिखना</h3><p class="tx1">नीचे के "डायरी" बटन से तारीख चुनें, कक्षा, विषय, पाठ और लर्निंग आउटकम भरकर "सेव करें" दबाएँ। दोबारा उसी तारीख को खोलने पर वही डायरी मिलेगी।</p></div><div class="cd"><h3>सप्ताह और दिवस</h3><p class="tx1">सप्ताह सोमवार से रविवार तक गिना जाता है। दिवस सोमवार (1) से शनिवार (6) तक होता है; रविवार अवकाश है।</p></div><div class="cd"><h3>प्रिंट</h3><p class="tx1">"प्रिंट करें" दबाने पर केवल डायरी का A4 पेज खुलता है। "PDF के रूप में सेव करें" चुनकर PDF भी बना सकते हैं।</p></div><div class="cd"><h3>आपका डेटा</h3><p class="tx1">आपका खाता और डायरी सुरक्षित क्लाउड (Firebase) में सेव होती है और केवल आप ही उसे देख सकते हैं। बैकअप सेटिंग्स से डाउनलोड करें।</p></div></div>';
   };
+  var _rs = R.settings;
+  R.settings = function () {
+    _rs(); var bd = document.querySelector('#pg-settings .bd'); if (!bd) return;
+    var lg = 'hi'; try { lg = localStorage.getItem('sd_lang') || 'hi'; } catch (x) {}
+    var c = document.createElement('div'); c.className = 'cd';
+    c.innerHTML = '<h3>भाषा / Language</h3><div class="cps" id="lgC"><button type="button" class="cp' + (lg === 'hi' ? ' on' : '') + '" data-lg="hi">हिंदी</button><button type="button" class="cp' + (lg === 'en' ? ' on' : '') + '" data-lg="en">English</button></div>';
+    bd.insertBefore(c, bd.firstChild);
+    c.onclick = function (e) { var b = e.target.closest('[data-lg]'); if (!b || b.dataset.lg === lg) return; try { localStorage.setItem('sd_lang', b.dataset.lg); } catch (x) {} location.reload(); };
+  };
   R.holidays = function () {
     var U = ud(), L = U.holidays.slice().sort(function (a, b) { return a.date < b.date ? -1 : 1; });
-    $('pg-holidays').innerHTML = H('अवकाश सूची', 'छुट्टियाँ', 'settings') + '<div class="bd"><div class="cd"><h3>नई छुट्टी जोड़ें</h3>' + F('hDate', 'तारीख', 'date', '', S.date) + F('hName', 'अवकाश का नाम', 'text', 'जैसे: दीपावली') + '<button class="btn-main" id="hAdd" type="button">छुट्टी जोड़ें</button></div>' +
+    var lg = 'hi'; try { lg = localStorage.getItem('sd_lang') || 'hi'; } catch (x) {}
+    var loc = lg === 'en' ? 'en-IN' : 'hi-IN', hm = S.hm || (S.hm = { y: new Date().getFullYear(), m: new Date().getMonth() }), f0 = new Date(hm.y, hm.m, 1), dim = new Date(hm.y, hm.m + 1, 0).getDate(), cells = '', ml = '', hv = '', vc, k, ds, nm;
+    for (k = 0; k < 7; k++) cells += '<i>' + new Date(2023, 0, 1 + k).toLocaleDateString(loc, { weekday: 'short' }) + '</i>';
+    for (k = 0; k < f0.getDay(); k++) cells += '<span></span>';
+    for (k = 1; k <= dim; k++) { ds = iso(new Date(hm.y, hm.m, k)); nm = holOf(ds); vc = !!nm && nm === vacOf(ds); cells += '<button type="button" class="hc' + (nm ? (vc ? ' vac' : ' hol') : '') + ((f0.getDay() + k - 1) % 7 === 0 ? ' sun' : '') + '" data-hc="' + ds + '">' + k + '</button>'; if (vc) hv = nm; else if (nm) ml += '<div class="pr"><span>' + fd(pd(ds)) + '</span><b>' + esc(nm) + '</b></div>'; }
+    var calCard = '<div class="cd"><h3>छुट्टी कैलेंडर</h3><div class="hnav"><button type="button" id="hPv" aria-label="पिछला माह">‹</button><b>' + f0.toLocaleDateString(loc, { month: 'long', year: 'numeric' }) + '</b><button type="button" id="hNx" aria-label="अगला माह">›</button></div><div class="hcal">' + cells + '</div><h3 style="margin-top:12px">इस माह की छुट्टियाँ</h3>' + (ml || (hv ? '' : '<p class="tx1">इस माह में कोई छुट्टी नहीं है।</p>')) + (hv ? '<p class="tx1">इस माह में ' + hv + ' भी है (नीले रंग की तारीखें)।</p>' : '') + '<p class="tx1">किसी तारीख को छूकर नीचे नई छुट्टी जोड़ सकते हैं।</p></div>';
+    $('pg-holidays').innerHTML = H('अवकाश सूची', 'छुट्टियाँ', 'settings') + '<div class="bd">' + calCard + '<div class="cd"><h3>नई छुट्टी जोड़ें</h3>' + F('hDate', 'तारीख', 'date', '', S.date) + F('hName', 'अवकाश का नाम', 'text', 'जैसे: दीपावली') + '<button class="btn-main" id="hAdd" type="button">छुट्टी जोड़ें</button></div>' +
       '<div class="cd"><h3>आपकी जोड़ी हुई छुट्टियाँ</h3>' + (L.length ? L.map(function (h) { return '<div class="pr"><span>' + fd(pd(h.date)) + '</span><b>' + esc(h.name) + ' <button class="x" type="button" data-hd="' + h.date + '">हटाएँ</button></b></div>'; }).join('') : '<p class="tx1">अभी कोई छुट्टी नहीं जोड़ी गई।</p>') + '</div>' +
-      '<div class="cd"><h3>राजपत्रित अवकाश (हर साल)</h3>' + Object.keys(NH).sort().map(function (k) { return '<div class="pr"><span>' + k.slice(3) + '/' + k.slice(0, 2) + '</span><b>' + NH[k] + '</b></div>'; }).join('') + '<p class="tx1">इन तारीखों और आपकी जोड़ी छुट्टियों पर डायरी नहीं लिखी जाती।</p></div></div>';
+      '<div class="cd"><h3>सरकारी अवकाश 2026 (उ0प्र0 बेसिक शिक्षा परिषद)</h3>' + Object.keys(HL).sort().map(function (k) { return '<div class="pr"><span>' + fd(pd(k)) + '</span><b>' + HL[k] + '</b></div>'; }).join('') + '<p class="tx1">ग्रीष्मावकाश: 20 मई से 15 जून। शीतकालीन अवकाश: 31 दिसम्बर से 14 जनवरी।</p><p class="tx1">मुस्लिम त्योहार चाँद दिखने के अनुसार माने जाएँगे। हरतालिका/हरियाली तीज, करवा चौथ, संकटा चतुर्थी, हलषष्ठी/ललई छठ, जीउतिया, अहोई अष्टमी का अवकाश शिक्षिकाओं को और पितृ-विसर्जन का अवकाश सभी शिक्षक/शिक्षिकाओं को देय है। जिलाधिकारी द्वारा अनुमन्य अवकाश अलग से जोड़ सकते हैं।</p>' + '<p class="tx1">इन तारीखों और आपकी जोड़ी छुट्टियों पर डायरी नहीं लिखी जाती।</p></div></div>';
+    $('hPv').onclick = function () { hm.m--; if (hm.m < 0) { hm.m = 11; hm.y--; } R.holidays(); };
+    $('hNx').onclick = function () { hm.m++; if (hm.m > 11) { hm.m = 0; hm.y++; } R.holidays(); };
+    document.querySelectorAll('#pg-holidays .hc').forEach(function (b) { b.onclick = function () { $('hDate').value = this.dataset.hc; document.querySelectorAll('#pg-holidays .hc').forEach(function (x) { x.classList.toggle('sel', x === b); }); $('hName').focus(); }; });
     $('hAdd').onclick = function () {
       var d = $('hDate').value, n = $('hName').value.trim(); err('hDate', d ? '' : 'तारीख चुनें।'); err('hName', n ? '' : 'अवकाश का नाम लिखें।'); if (!d || !n) return;
       U.holidays = U.holidays.filter(function (h) { return h.date !== d; }); U.holidays.push({ date: d, name: n }); sync(FB.put('holidays', d, { date: d, name: n }), 'छुट्टी'); R.holidays(); say('छुट्टी जोड़ दी गई ✓');
@@ -1376,8 +1409,8 @@
     document.querySelectorAll('#pg-holidays .x').forEach(function (b) { b.onclick = function () { var d = this.dataset.hd; U.holidays = U.holidays.filter(function (h) { return h.date !== d; }); sync(FB.del('holidays', d), 'छुट्टी'); R.holidays(); }; });
   };
   R.cls = function () {
-    var c = S.csel || (S.csel = { c: ['कक्षा 1'], s: 'हिंदी' });
-    $('pg-cls').innerHTML = H('कक्षा एवं विषय', fd(pd(S.date)), 'home') + '<div class="bd"><div class="cd"><h3>कक्षाएँ चुनें</h3><div class="cps" id="clC">' + CLS.slice(0, 8).map(function (x) { return '<button type="button" class="cp' + (c.c.indexOf(x) > -1 ? ' on' : '') + '">' + x + '</button>'; }).join('') + '</div><h3>विषय चुनें</h3><div class="cps" id="clS">' + GENS.map(function (x) { return '<button type="button" class="cp' + (c.s === x ? ' on' : '') + '">' + x + '</button>'; }).join('') + '</div><button class="btn-main" id="clGo" type="button">डायरी में पंक्तियाँ बनाएँ</button><p class="stt">हर कक्षा के लिए एक पंक्ति बनेगी; डायरी में जाकर कुछ भी बदल सकते हैं।</p></div></div>';
+    var G = tGens(), c = S.csel || (S.csel = { c: tCls().length ? tCls() : ['कक्षा 1'], s: G[0] }); if (G.indexOf(c.s) < 0) c.s = G[0];
+    $('pg-cls').innerHTML = H('कक्षा एवं विषय', fd(pd(S.date)), 'home') + '<div class="bd"><div class="cd"><h3>कक्षाएँ चुनें</h3><div class="cps" id="clC">' + CLS.slice(0, 8).map(function (x) { return '<button type="button" class="cp' + (c.c.indexOf(x) > -1 ? ' on' : '') + '">' + x + '</button>'; }).join('') + '</div><h3>विषय चुनें</h3><div class="cps" id="clS">' + G.map(function (x) { return '<button type="button" class="cp' + (c.s === x ? ' on' : '') + '">' + x + '</button>'; }).join('') + '</div><button class="btn-main" id="clGo" type="button">डायरी में पंक्तियाँ बनाएँ</button><p class="stt">हर कक्षा के लिए एक पंक्ति बनेगी; डायरी में जाकर कुछ भी बदल सकते हैं।</p></div></div>';
     $('clC').onclick = function (e) { var b = e.target.closest('.cp'); if (!b) return; var i = c.c.indexOf(b.textContent); if (i > -1) c.c.splice(i, 1); else c.c.push(b.textContent); b.classList.toggle('on'); };
     $('clS').onclick = function (e) { var b = e.target.closest('.cp'); if (!b) return; c.s = b.textContent; document.querySelectorAll('#clS .cp').forEach(function (x) { x.classList.toggle('on', x === b); }); };
     $('clGo').onclick = function () {
@@ -1444,5 +1477,26 @@
 </script>
 <script>
 if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function (e) { console.warn('SW register failed', e); }); }); }
+</script>
+<script>
+(function () {
+  var L = 'hi'; try { L = localStorage.getItem('sd_lang') || 'hi'; } catch (e) {}
+  document.documentElement.lang = L;
+  if (L !== 'en') return;
+  var D = {"शिक्षक डायरी को अपने फ़ोन में रखें": "Keep Shikshak Diary on your phone", "शिक्षक डायरी": "Shikshak Diary", "नमस्कार, ": "Hello, ", "त्वरित कार्य": "Quick actions", "आज की डायरी लिखें": "Write today's diary", "आज की डायरी": "Today's diary", "सभी देखें": "View all", "हाल की नोट्स": "Recent notes", "सेव की गई डायरी": "Saved diary", "सेव की गई योजनाएँ": "Saved plans", "अवकाश सूची": "Holiday list", "छुट्टी कैलेंडर": "Holiday calendar", "इस माह की छुट्टियाँ": "Holidays this month", "इस माह में कोई छुट्टी नहीं है।": "No holidays this month.", "किसी तारीख को छूकर नीचे नई छुट्टी जोड़ सकते हैं।": "Tap a date to add a new holiday below.", "छुट्टियाँ": "Holidays", "शिक्षण सामग्री": "Teaching material", "सहायता": "Help", "सेटिंग्स": "Settings", "लॉग आउट": "Log out", "नया खाता बनाएँ": "Create new account", "लॉग इन करें": "Log in", "लॉग इन": "Log in", "खाता बनाएँ": "Create account", "अपने अकाउंट में प्रवेश करें": "Sign in to your account", "पासवर्ड भूल गए?": "Forgot password?", "मुझे याद रखें": "Remember me", "पहले से खाता है? लॉग इन करें": "Already have an account? Log in", "पासवर्ड": "Password", "ईमेल पता": "Email address", "मोबाइल नंबर": "Mobile number", "पूरा नाम": "Full name", "होम": "Home", "कैलेंडर": "Calendar", "नोट्स": "Notes", "प्रोफाइल": "Profile", "डायरी": "Diary", "संपादित करें": "Edit", "सेव करें": "Save", "रद्द करें": "Cancel", "हटाएँ": "Delete", "ठीक है": "OK", "कॉपी करें": "Copy", "शेयर करें": "Share", "प्रिंट करें": "Print", "फोटो बदलें": "Change photo", "फोटो हटाएँ": "Remove photo", "व्यक्तिगत जानकारी": "Personal information", "विद्यालय की जानकारी": "School information", "शिक्षण की जानकारी": "Teaching information", "खाता जानकारी": "Account information", "विद्यालय का नाम": "School name", "जिला": "District", "राज्य": "State", "पढ़ाई जाने वाली कक्षाएँ": "Classes taught", "पढ़ाए जाने वाले विषय": "Subjects taught", "आप कौन-सी कक्षाएँ पढ़ाते हैं?": "Which classes do you teach?", "आप कौन-से विषय पढ़ाते हैं?": "Which subjects do you teach?", "पंजीकरण की तिथि": "Registration date", "कक्षा एवं विषय": "Class & subject", "कक्षाएँ चुनें": "Choose classes", "विषय चुनें": "Choose subject", "कक्षा": "Class", "पंक्ति जोड़ें": "Add row", "स्वतः बनाएँ": "Auto-generate", "नई छुट्टी जोड़ें": "Add new holiday", "अवकाश का नाम": "Holiday name", "छुट्टी जोड़ें": "Add holiday", "आपकी जोड़ी हुई छुट्टियाँ": "Holidays you added", "अभी कोई छुट्टी नहीं जोड़ी गई।": "No holidays added yet.", "राजपत्रित अवकाश (हर साल)": "Gazetted holidays (every year)", "इन तारीखों और आपकी जोड़ी छुट्टियों पर डायरी नहीं लिखी जाती।": "No diary is written on these dates or on holidays you add.", "जैसे: दीपावली": "e.g. Diwali", "छुट्टी जोड़ दी गई ✓": "Holiday added ✓", "गणतंत्र दिवस": "Republic Day", "अंबेडकर जयंती": "Ambedkar Jayanti", "स्वतंत्रता दिवस": "Independence Day", "गांधी जयंती": "Gandhi Jayanti", "क्रिसमस": "Christmas", "अवकाश": "Holiday", "तारीख": "Date", "भाषा / Language": "Language", "डेटा साफ़ करें": "Clear data", "खाता हटाएँ": "Delete account", "बैकअप डाउनलोड करें (JSON)": "Download backup (JSON)", "आपका डेटा": "Your data", "मेरा डेटा साफ़ करें": "Clear my data", "खाता हमेशा के लिए हटाएँ": "Delete account permanently", "ऐप इंस्टॉल करें": "Install app", "अभी इंस्टॉल करें": "Install now", "अभी रहने दें": "Not now", "प्रोफाइल सेव हो गई ✓": "Profile saved ✓", "डायरी सेव हो गई": "Diary saved", "नोट सेव हो गया ✓": "Note saved ✓", "क्या आप लॉग आउट करना चाहते हैं?": "Do you want to log out?", "बिना सेव किए बदलाव हट जाएँगे। जारी रखें?": "Unsaved changes will be lost. Continue?", "बाहर निकलने के लिए दोबारा Back दबाएँ": "Press Back again to exit", "कृपया प्रतीक्षा करें...": "Please wait...", "नया नोट": "New note", "पूर्वावलोकन": "Preview", "कार्य दिवस": "Working day", "सप्ताह": "Week", "दिवस": "Day", "रविवार": "Sunday", "सोमवार": "Monday", "मंगलवार": "Tuesday", "बुधवार": "Wednesday", "गुरुवार": "Thursday", "शुक्रवार": "Friday", "शनिवार": "Saturday", "जनवरी": "January", "फ़रवरी": "February", "फरवरी": "February", "मार्च": "March", "अप्रैल": "April", "मई": "May", "जून": "June", "जुलाई": "July", "अगस्त": "August", "सितंबर": "September", "सितम्बर": "September", "अक्टूबर": "October", "नवंबर": "November", "नवम्बर": "November", "दिसंबर": "December", "दिसम्बर": "December", "हिंदी": "Hindi", "अंग्रेज़ी": "English", "गणित": "Maths", "विज्ञान": "Science", "सामाजिक विज्ञान": "Social Science", "संस्कृत": "Sanskrit", "कला": "Art", "सामान्य ज्ञान": "General Knowledge", "सरकारी अवकाश 2026 (उ0प्र0 बेसिक शिक्षा परिषद)": "Official holidays 2026 (UP Basic Shiksha Parishad)", "ग्रीष्मावकाश: 20 मई से 15 जून। शीतकालीन अवकाश: 31 दिसम्बर से 14 जनवरी।": "Summer vacation: 20 May to 15 June. Winter vacation: 31 December to 14 January.", "ग्रीष्मावकाश": "Summer vacation", "शीतकालीन अवकाश": "Winter vacation", "इस माह में ": "This month also has ", "भी है (नीले रंग की तारीखें)।": "(dates in blue).", "जिलाधिकारी द्वारा अनुमन्य अवकाश अलग से जोड़ सकते हैं।": "Holidays permitted by the District Magistrate can be added separately.", "मुस्लिम त्योहार चाँद दिखने के अनुसार माने जाएँगे।": "Muslim festivals follow moon sighting.", "हरतालिका/हरियाली तीज, करवा चौथ, संकटा चतुर्थी, हलषष्ठी/ललई छठ, जीउतिया, अहोई अष्टमी का अवकाश शिक्षिकाओं को और पितृ-विसर्जन का अवकाश सभी शिक्षक/शिक्षिकाओं को देय है।": "Hartalika/Hariyali Teej, Karwa Chauth, Sankata Chaturthi, Halshashthi/Lalai Chhath, Jivitputrika and Ahoi Ashtami leave is for women teachers; Pitr-Visarjan leave is for all teachers.", "हज़रत अली का जन्म दिवस": "Hazrat Ali's Birthday", "मकर संक्रान्ति": "Makar Sankranti", "बसन्त पंचमी": "Basant Panchami", "गणतन्त्र दिवस": "Republic Day", "संत रविदास जयन्ती": "Sant Ravidas Jayanti", "महाशिवरात्रि": "Mahashivratri", "होलिका दहन": "Holika Dahan", "होली": "Holi", "ईद-उल-फितर": "Eid-ul-Fitr", "रामनवमी": "Ram Navami", "महावीर जयंती": "Mahavir Jayanti", "गुड फ्राइडे": "Good Friday", "डॉ0 भीमराव अम्बेडकर जन्म दिवस": "Dr. B. R. Ambedkar Jayanti", "बुद्ध पूर्णिमा": "Buddha Purnima", "ईदुज्जुहा (बकरीद)": "Eid-ul-Adha (Bakrid)", "मोहर्रम": "Muharram", "चेहल्लुम": "Chehallum", "ईद-ए-मिलाद / वारावफात": "Eid-e-Milad / Barawafat", "रक्षाबंधन": "Raksha Bandhan", "जन्माष्टमी": "Janmashtami", "विश्वकर्मा पूजा": "Vishwakarma Puja", "अनन्त चतुर्दशी": "Anant Chaturdashi", "महात्मा गांधी जन्मदिवस": "Mahatma Gandhi Jayanti", "दशहरा (महा नवमी) / विजय दशमी": "Dussehra (Maha Navami) / Vijay Dashami", "महर्षि वाल्मीकि जयन्ती": "Maharshi Valmiki Jayanti", "सरदार वल्लभ भाई पटेल का जन्म दिवस एवं आचार्य नरेन्द्र देव जयन्ती": "Sardar Vallabhbhai Patel's Birthday & Acharya Narendra Dev Jayanti", "नरक चतुर्दशी / दीपावली": "Narak Chaturdashi / Diwali", "गोवर्धन पूजा": "Govardhan Puja", "भैया दूज / चित्रगुप्त जयन्ती": "Bhaiya Dooj / Chitragupt Jayanti", "छठ पूजा पर्व": "Chhath Puja", "गुरुनानक जयन्ती / कार्तिक पूर्णिमा / गुरु तेगबहादुर शहीद दिवस": "Guru Nanak Jayanti / Kartik Purnima / Guru Tegh Bahadur Martyrdom Day", "क्रिसमस डे": "Christmas Day"}, keys = Object.keys(D).sort(function (a, b) { return b.length - a.length; }), re = /[\u0900-\u097F]/;
+  function tr(s) { if (!s || !re.test(s)) return s; for (var i = 0; i < keys.length; i++) if (s.indexOf(keys[i]) > -1) s = s.split(keys[i]).join(D[keys[i]]); return s; }
+  var oc = window.confirm; window.confirm = function (m) { return oc.call(window, tr(m)); };
+  var oa = window.alert; window.alert = function (m) { return oa.call(window, tr(m)); };
+  var AT = ['placeholder', 'aria-label', 'title', 'alt'];
+  function node(n) {
+    if (n.nodeType === 3) { var v = tr(n.nodeValue); if (v !== n.nodeValue) n.nodeValue = v; return; }
+    if (n.nodeType !== 1 || /^(SCRIPT|STYLE)$/.test(n.tagName)) return;
+    AT.forEach(function (a) { if (n.hasAttribute(a)) { var v = tr(n.getAttribute(a)); if (v !== n.getAttribute(a)) n.setAttribute(a, v); } });
+    for (var c = n.firstChild; c; c = c.nextSibling) node(c);
+  }
+  node(document.body); document.title = tr(document.title);
+  new MutationObserver(function (ms) { ms.forEach(function (m) { if (m.type === 'childList') m.addedNodes.forEach(node); else if (m.type === 'characterData') node(m.target); else node(m.target); }); })
+    .observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: AT });
+})();
 </script>
 </body></html>
