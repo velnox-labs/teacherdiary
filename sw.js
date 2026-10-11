@@ -1,11 +1,11 @@
 // शिक्षक डायरी — service worker. Naya version dene par VERSION badlo.
-const VERSION = 'v1';
+const VERSION = 'v4';
 const SHELL = 'sd-shell-' + VERSION;
 const RUNTIME = 'sd-runtime-' + VERSION;
-const PRECACHE = ['./', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
+const PRECACHE = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(SHELL).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(SHELL).then((c) => Promise.all(PRECACHE.map((u) => c.add(u).catch(() => {})))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (e) => {
